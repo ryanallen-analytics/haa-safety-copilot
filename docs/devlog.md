@@ -37,3 +37,4 @@
 
 *** Why I used a fake client to test LLMClient ***
 I inject the LLM client so unit tests can use a fake. That keeps them free, fast, and deterministic, and lets me test edge cases like truncation. A separate real call checks that the integration works.
+
