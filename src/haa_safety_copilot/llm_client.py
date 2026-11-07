@@ -9,7 +9,7 @@ from pathlib import Path
 
 from anthropic import Anthropic
 
-DEFAULT_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-haiku-5-5")
+FALLBACK_MODEL = "claude-haiku-5-5"
 DEFAULT_LOG_PATH = Path("logs/llm_calls.jsonl")
 
 # USD per million tokens: (input, output). Fill in from docs/notes/anthropic-api.md.
@@ -42,12 +42,12 @@ class LLMClient:
     def __init__(
         self,
         client=None,
-        model: str = DEFAULT_MODEL,
+        model: str | None = None,
         log_path: Path = DEFAULT_LOG_PATH,
     ) -> None:
         # Tests pass in a fake client; real code uses the Anthropic SDK.
         self.client = client or Anthropic()
-        self.model = model
+        self.model = model or os.getenv("ANTHROPIC_MODEL", FALLBACK_MODEL)
         self.log_path = Path(log_path)
 
     def complete(
