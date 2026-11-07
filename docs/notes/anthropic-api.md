@@ -11,6 +11,8 @@
 5. Truncation is silent in the text; only stop_reason == "max_tokens" reveals it,
    so the client must log stop_reason.
 
+
+# Haiku 5.5 rates apply to prompts up to 100K tokens; longer prompts cost 5x (handle in Phase 2).
 Haiku 5.5 pricing: $0.10 / M input tokens, $0.50 / M output tokens
 
 Eval candidates:
