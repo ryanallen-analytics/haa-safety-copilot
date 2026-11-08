@@ -66,7 +66,9 @@ class LLMClient:
         input_tokens = response.usage.input_tokens
         output_tokens = response.usage.output_tokens
         result = LLMResponse(
-            text=response.content[0].text,
+            text="".join(
+                block.text for block in response.content if block.type == "text"
+            ),
             model=response.model,
             input_tokens=input_tokens,
             output_tokens=output_tokens,

@@ -12,12 +12,16 @@ class FakeMessages:
         self.stop_reason = stop_reason
         self.calls: list[dict] = []
         self.replies: list[str] = []  # queued replies; falls back to "fake reply"
+        self.thinking: str | None = None  # if set, a thinking block comes first
 
     def create(self, **kwargs):
         self.calls.append(kwargs)
         text = self.replies.pop(0) if self.replies else "fake reply"
+        content = [SimpleNamespace(type="text", text=text)]
+        if self.thinking is not None:
+            content.insert(0, SimpleNamespace(type="thinking", thinking=self.thinking))
         return SimpleNamespace(
-            content=[SimpleNamespace(text=text)],
+            content=content,
             model=kwargs["model"],
             stop_reason=self.stop_reason,
             usage=SimpleNamespace(input_tokens=1000, output_tokens=2000),

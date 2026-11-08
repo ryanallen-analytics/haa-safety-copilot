@@ -50,7 +50,7 @@ def parse_metar(
     last_error: ValidationError | None = None
 
     for _ in range(max_attempts):
-        response = client.complete(prompt, system=SYSTEM, max_tokens=500)
+        response = client.complete(prompt, system=SYSTEM, max_tokens=2000)
         try:
             return WeatherSummary.model_validate_json(_strip_code_fences(response.text))
         except ValidationError as err:

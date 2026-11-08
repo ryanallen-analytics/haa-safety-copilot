@@ -23,3 +23,11 @@ def test_truncation_is_reported(llm_client, fake_anthropic):
 
     assert result.stop_reason == "max_tokens"
     assert "system" not in fake_anthropic.messages.calls[0]
+
+
+def test_thinking_blocks_are_skipped(llm_client, fake_anthropic):
+    fake_anthropic.messages.thinking = "Let me reason about this..."
+
+    result = llm_client.complete("hello")
+
+    assert result.text == "fake reply"
