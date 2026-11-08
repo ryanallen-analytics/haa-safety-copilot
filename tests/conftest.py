@@ -11,11 +11,13 @@ class FakeMessages:
     def __init__(self, stop_reason: str = "end_turn") -> None:
         self.stop_reason = stop_reason
         self.calls: list[dict] = []
+        self.replies: list[str] = []  # queued replies; falls back to "fake reply"
 
     def create(self, **kwargs):
         self.calls.append(kwargs)
+        text = self.replies.pop(0) if self.replies else "fake reply"
         return SimpleNamespace(
-            content=[SimpleNamespace(text="fake reply")],
+            content=[SimpleNamespace(text=text)],
             model=kwargs["model"],
             stop_reason=self.stop_reason,
             usage=SimpleNamespace(input_tokens=1000, output_tokens=2000),
