@@ -21,3 +21,20 @@
 
 **What's next**
 - Build `llm_client.py` that logs model, tokens, latency, and cost for every call
+
+## 2026-11-06/07 · LLMClient and fake-client tests (Week 0 complete)
+
+- src/haa_safety_copilot/llm_client.py: LLMClient.complete() returns an LLMResponse and appends a JSONL record to logs/llm_calls.jsonl. First real call: 41 in / 163 out tokens, 1.88 s, $0.0000856.
+- hello_llm.py now goes through LLMClient. tests/test_llm_client.py: two tests with a fake Anthropic client (records calls, no network) using tmp_path. They cover the cost math, passing system through, the log line, max_tokens truncation, and None cost for unknown models.
+
+*** Problems and fixes ***
+
+- pytest collected only 2 tests: tests/test_units.py had lost its test function. Restored it; 3 passing.
+
+*** Lessons ***
+
+- Dependency injection (passing the client in) is what makes the code testable without the network. Read the "collected N items" line, not just "passed".
+
+*** Why I used a fake client to test LLMClient ***
+I inject the LLM client so unit tests can use a fake. That keeps them free, fast, and deterministic, and lets me test edge cases like truncation. A separate real call checks that the integration works.
+

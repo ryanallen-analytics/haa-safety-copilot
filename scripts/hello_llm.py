@@ -2,8 +2,6 @@
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 from haa_safety_copilot.llm_client import LLMClient
 
 PROMPT = (
@@ -13,6 +11,7 @@ PROMPT = (
 
 
 def main() -> None:
+    load_dotenv()
     result = LLMClient().complete(PROMPT)
     print(result.text)
     print(
