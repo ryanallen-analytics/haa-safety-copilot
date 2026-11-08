@@ -1,4 +1,6 @@
 # haa-safety-copilot
+![CI](https://github.com/ryanallen-analytics/haa-safety-copilot/actions/workflows/ci.yml/badge.svg)
+
 """Unit conversions used in flight planning."""
 
 SM_TO_NM = 0.868976
