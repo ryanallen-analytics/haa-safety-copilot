@@ -1,5 +1,6 @@
 """Client for the aviationweather.gov Data API."""
 
+import time
 from datetime import datetime
 
 import httpx
@@ -47,16 +48,35 @@ def _normalize_stations(stations: list[str]) -> str:
     return ",".join(cleaned)
 
 
+CACHE_TTL_S = 300  # 5 minutes; METARs update about hourly
+_cache: dict[tuple, tuple[float, list[dict]]] = {}
+
+
+def clear_cache() -> None:
+    _cache.clear()
+
+
 def _get_json(endpoint: str, params: dict, client: httpx.Client | None) -> list[dict]:
+    key = (endpoint, tuple(sorted(params.items())))
+    cached = _cache.get(key)
+    if cached is not None and time.monotonic() - cached[0] < CACHE_TTL_S:
+        return cached[1]
+
     owns_client = client is None
     if client is None:
-        client = httpx.Client(timeout=TIMEOUT_S, headers={"User-Agent": USER_AGENT})
+        client = httpx.Client()
     try:
-        response = client.get(f"{BASE_URL}/{endpoint}", params=params)
+        response = client.get(
+            f"{BASE_URL}/{endpoint}",
+            params=params,
+            headers={"User-Agent": USER_AGENT},
+            timeout=TIMEOUT_S,
+        )
         if response.status_code == 204:  # valid request, no data available
-            return []
-        response.raise_for_status()
-        return response.json()
+            data: list[dict] = []
+        else:
+            response.raise_for_status()
+            data = response.json()
     except httpx.TimeoutException as err:
         raise WeatherAPIError(
             f"{endpoint} request timed out after {TIMEOUT_S}s"
@@ -69,6 +89,9 @@ def _get_json(endpoint: str, params: dict, client: httpx.Client | None) -> list[
     finally:
         if owns_client:
             client.close()
+
+    _cache[key] = (time.monotonic(), data)
+    return data
 
 
 def get_metar(
