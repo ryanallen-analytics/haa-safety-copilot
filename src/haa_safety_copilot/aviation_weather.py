@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 
 import httpx
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 BASE_URL = "https://aviationweather.gov/api/data"
 USER_AGENT = (
@@ -23,20 +23,58 @@ class CloudLayer(BaseModel):
     base: int | None = None  # feet AGL
 
 
-class MetarReport(BaseModel):
-    """One METAR as the API returns it; aliases map the API's JSON keys."""
+class Conditions(BaseModel):
+    """Fields shared by METARs and TAF forecast periods."""
 
     model_config = ConfigDict(extra="ignore")
+
+    wind_dir: int | str | None = Field(None, alias="wdir")  # degrees or "VRB"
+    wind_speed_kt: int | None = Field(None, alias="wspd")
+    wind_gust_kt: int | None = Field(None, alias="wgst")
+    visibility: str | float | None = Field(None, alias="visib")  # "10+", "6+", 3
+    wx_string: str | None = Field(None, alias="wxString")
+    clouds: list[CloudLayer] = Field(default_factory=list)
+
+    @field_validator("visibility", mode="before")
+    @classmethod
+    def blank_visibility_is_none(cls, value):
+        """The TAF sometimes sends "" for no visibility group; treat it as missing."""
+        return None if value == "" else value
+
+
+class MetarReport(Conditions):
+    """One METAR as the API returns it."""
 
     icao_id: str = Field(alias="icaoId")
     raw: str = Field(alias="rawOb")
     obs_time: datetime = Field(alias="obsTime")  # epoch seconds -> UTC datetime
-    wind_dir: int | str | None = Field(None, alias="wdir")  # degrees or "VRB"
-    wind_speed_kt: int | None = Field(None, alias="wspd")
-    wind_gust_kt: int | None = Field(None, alias="wgst")
-    visibility: str | float | None = Field(None, alias="visib")  # e.g. "10+"
-    wx_string: str | None = Field(None, alias="wxString")
-    clouds: list[CloudLayer] = Field(default_factory=list)
+
+
+class TafPeriod(Conditions):
+    """One forecast period inside a TAF."""
+
+    time_from: datetime = Field(alias="timeFrom")
+    time_to: datetime = Field(alias="timeTo")
+    change: str | None = Field(None, alias="fcstChange")  # None, FM, BECMG, TEMPO, PROB
+    probability: int | None = None
+
+
+class TafReport(BaseModel):
+    """One TAF as the API returns it."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    icao_id: str = Field(alias="icaoId")
+    raw: str = Field(alias="rawTAF")
+    periods: list[TafPeriod] = Field(alias="fcsts")
+
+    @property
+    def valid_from(self) -> datetime:
+        return min(p.time_from for p in self.periods)
+
+    @property
+    def valid_to(self) -> datetime:
+        return max(p.time_to for p in self.periods)
 
 
 def _normalize_stations(stations: list[str]) -> str:
@@ -102,3 +140,9 @@ def get_metar(
     return [
         MetarReport.model_validate(item) for item in _get_json("metar", params, client)
     ]
+
+
+def get_taf(stations: list[str], client: httpx.Client | None = None) -> list[TafReport]:
+    """Latest TAF for each station. Stations with no TAF are simply absent."""
+    params = {"ids": _normalize_stations(stations), "format": "json"}
+    return [TafReport.model_validate(item) for item in _get_json("taf", params, client)]
