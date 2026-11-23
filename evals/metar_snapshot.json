@@ -1,0 +1,169 @@
+[
+  {
+    "wdir": 70,
+    "wspd": 8,
+    "wgst": null,
+    "visib": 3.0,
+    "wxString": "+RA BR",
+    "clouds": [
+      {
+        "cover": "BKN",
+        "base": 300
+      },
+      {
+        "cover": "OVC",
+        "base": 800
+      }
+    ],
+    "icaoId": "KBOS",
+    "rawOb": "METAR KBOS 230254Z 07008KT 3SM +RA BR BKN003 OVC008 12/12 A2991 RMK AO2 SLP126 P0011 60015 T01170117 58039",
+    "obsTime": "2026-11-23T02:54:00Z"
+  },
+  {
+    "wdir": 0,
+    "wspd": 0,
+    "wgst": null,
+    "visib": "10+",
+    "wxString": null,
+    "clouds": [
+      {
+        "cover": "BKN",
+        "base": 22000
+      }
+    ],
+    "icaoId": "KBTV",
+    "rawOb": "METAR KBTV 230254Z 00000KT 10SM BKN220 12/04 A2986 RMK AO2 SLP112 T01170044 56028",
+    "obsTime": "2026-11-23T02:54:00Z"
+  },
+  {
+    "wdir": 240,
+    "wspd": 8,
+    "wgst": null,
+    "visib": "10+",
+    "wxString": null,
+    "clouds": [
+      {
+        "cover": "SCT",
+        "base": 22000
+      }
+    ],
+    "icaoId": "KDEN",
+    "rawOb": "METAR KDEN 230253Z 24008KT 10SM SCT220 M01/M06 A3014 RMK AO2 SLP227 T10111056 51004",
+    "obsTime": "2026-11-23T02:53:00Z"
+  },
+  {
+    "wdir": 0,
+    "wspd": 0,
+    "wgst": null,
+    "visib": "10+",
+    "wxString": null,
+    "clouds": [],
+    "icaoId": "KFLG",
+    "rawOb": "METAR KFLG 230257Z AUTO 00000KT 10SM CLR M02/M04 A3011 RMK AO2 SLP207 T10221044 53004",
+    "obsTime": "2026-11-23T02:57:00Z"
+  },
+  {
+    "wdir": 310,
+    "wspd": 21,
+    "wgst": 29,
+    "visib": "10+",
+    "wxString": null,
+    "clouds": [
+      {
+        "cover": "BKN",
+        "base": 3900
+      }
+    ],
+    "icaoId": "KMSP",
+    "rawOb": "METAR KMSP 230253Z 31021G29KT 10SM BKN039 01/M07 A3020 RMK AO2 PK WND 32031/0218 SLP236 T00061072 53016",
+    "obsTime": "2026-11-23T02:53:00Z"
+  },
+  {
+    "wdir": 290,
+    "wspd": 9,
+    "wgst": null,
+    "visib": "10+",
+    "wxString": null,
+    "clouds": [
+      {
+        "cover": "FEW",
+        "base": 3700
+      }
+    ],
+    "icaoId": "KORD",
+    "rawOb": "METAR KORD 230251Z 29009KT 10SM FEW037 05/00 A3007 RMK AO2 SLP185 T00500000 53015 $",
+    "obsTime": "2026-11-23T02:51:00Z"
+  },
+  {
+    "wdir": 120,
+    "wspd": 13,
+    "wgst": null,
+    "visib": "10+",
+    "wxString": null,
+    "clouds": [
+      {
+        "cover": "OVC",
+        "base": 10000
+      }
+    ],
+    "icaoId": "KPDX",
+    "rawOb": "METAR KPDX 230253Z 12013KT 10SM OVC100 07/03 A3002 RMK AO2 SLP164 T00670028 51000 $",
+    "obsTime": "2026-11-23T02:53:00Z"
+  },
+  {
+    "wdir": 100,
+    "wspd": 9,
+    "wgst": null,
+    "visib": "10+",
+    "wxString": null,
+    "clouds": [
+      {
+        "cover": "BKN",
+        "base": 14000
+      }
+    ],
+    "icaoId": "KSEA",
+    "rawOb": "METAR KSEA 230253Z 10009KT 10SM BKN140 07/01 A3001 RMK AO2 SLP169 T00670011 58001 $",
+    "obsTime": "2026-11-23T02:53:00Z"
+  },
+  {
+    "wdir": 60,
+    "wspd": 9,
+    "wgst": null,
+    "visib": "10+",
+    "wxString": null,
+    "clouds": [
+      {
+        "cover": "FEW",
+        "base": 3000
+      },
+      {
+        "cover": "FEW",
+        "base": 9000
+      },
+      {
+        "cover": "SCT",
+        "base": 18000
+      }
+    ],
+    "icaoId": "KSFO",
+    "rawOb": "METAR KSFO 230256Z 06009KT 10SM FEW030 FEW090 SCT180 12/07 A3005 RMK AO2 SLP177 T01170072 51008",
+    "obsTime": "2026-11-23T02:56:00Z"
+  },
+  {
+    "wdir": 20,
+    "wspd": 5,
+    "wgst": null,
+    "visib": "10+",
+    "wxString": null,
+    "clouds": [
+      {
+        "cover": "FEW",
+        "base": 10000
+      }
+    ],
+    "icaoId": "PANC",
+    "rawOb": "METAR PANC 230253Z 02005KT 10SM FEW100 M04/M08 A2985 RMK AO2 SLP110 T10441078 53001",
+    "obsTime": "2026-11-23T02:53:00Z"
+  }
+]
