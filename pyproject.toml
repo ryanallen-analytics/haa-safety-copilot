@@ -9,10 +9,11 @@ dependencies = [
     "httpx>=0.28.1",
     "pydantic>=2.14.1",
     "python-dotenv>=1.2.4",
+    "typer>=0.29.2",
 ]
 
 [project.scripts]
-haa-safety-copilot = "haa_safety_copilot:main"
+haa = "haa_safety_copilot.cli:app"
 
 [build-system]
 requires = ["uv_build>=0.13.5,<0.14.0"]
