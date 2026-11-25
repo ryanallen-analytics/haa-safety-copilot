@@ -6,6 +6,7 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from anthropic import Anthropic
 
@@ -50,25 +51,29 @@ class LLMClient:
         self.model = model or os.getenv("ANTHROPIC_MODEL", FALLBACK_MODEL)
         self.log_path = Path(log_path)
 
-    def complete(
-        self, prompt: str, system: str | None = None, max_tokens: int = 500
-    ) -> LLMResponse:
-        kwargs = {"system": system} if system else {}
+    def chat(
+        self,
+        messages: list[dict],
+        system: str | None = None,
+        tools: list[dict] | None = None,
+        max_tokens: int = 2000,
+    ) -> tuple[Any, LLMResponse]:
+        """One Messages API call. Logs it and returns (raw response, summary)."""
+        kwargs: dict = {}
+        if system:
+            kwargs["system"] = system
+        if tools:
+            kwargs["tools"] = tools
         start = time.perf_counter()
         response = self.client.messages.create(
-            model=self.model,
-            max_tokens=max_tokens,
-            messages=[{"role": "user", "content": prompt}],
-            **kwargs,
+            model=self.model, max_tokens=max_tokens, messages=messages, **kwargs
         )
         latency_s = time.perf_counter() - start
 
         input_tokens = response.usage.input_tokens
         output_tokens = response.usage.output_tokens
-        result = LLMResponse(
-            text="".join(
-                block.text for block in response.content if block.type == "text"
-            ),
+        summary = LLMResponse(
+            text="".join(b.text for b in response.content if b.type == "text"),
             model=response.model,
             input_tokens=input_tokens,
             output_tokens=output_tokens,
@@ -76,8 +81,17 @@ class LLMClient:
             latency_s=round(latency_s, 3),
             cost_usd=estimate_cost(self.model, input_tokens, output_tokens),
         )
-        self._log(result)
-        return result
+        self._log(summary)
+        return response, summary
+
+    def complete(
+        self, prompt: str, system: str | None = None, max_tokens: int = 500
+    ) -> LLMResponse:
+        """Single-prompt convenience wrapper around chat()."""
+        _, summary = self.chat(
+            [{"role": "user", "content": prompt}], system=system, max_tokens=max_tokens
+        )
+        return summary
 
     def _log(self, result: LLMResponse) -> None:
         record = {"timestamp": datetime.now(UTC).isoformat(), **asdict(result)}
