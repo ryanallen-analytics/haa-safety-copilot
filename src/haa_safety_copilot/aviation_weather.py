@@ -48,6 +48,9 @@ class MetarReport(Conditions):
     icao_id: str = Field(alias="icaoId")
     raw: str = Field(alias="rawOb")
     obs_time: datetime = Field(alias="obsTime")  # epoch seconds -> UTC datetime
+    temp_c: float | None = Field(None, alias="temp")
+    dewpoint_c: float | None = Field(None, alias="dewp")
+    altimeter_hpa: float | None = Field(None, alias="altim")  # API reports hPa
 
 
 class TafPeriod(Conditions):
